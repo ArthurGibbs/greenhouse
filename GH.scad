@@ -8,14 +8,14 @@ base_backwall_height = 1200;
 brick_width = 112;
 delta = 5;
 
-corner_post_width = 75;
+corner_post_width = 40;
 corner_post_height = 1220;
 
 plinth_width = 120;
 plinth_height = 20;
 plinth_overlap = 10;
 
-row_post_width = 38;
+row_post_width = 40;
 
 pane_width = 610;
 pane_height = 1220;
@@ -41,17 +41,16 @@ CIL = (row_post_width*(panes_l-1))+(CPW*panes_l);
 CEW = CIW + 2* brick_width;
 CEL = CIL + 2* brick_width;
 
-
 base_door_gap = 2*pane_width +  3*row_post_width;
 
 
 
-TexBase();
+//TexBase();
 color([0.5,0.3,0.20,1])
 Verticles();
-color([0.5,0.3,0.20,1])
-Plinth();
-Glass();
+//color([0.5,0.3,0.20,1])
+//Plinth();
+//Glass();
 
 
 module Glass(){
@@ -105,44 +104,68 @@ translate([CEW/2 - plinth_width + plinth_overlap ,-CEL/2 -plinth_overlap + plint
 
 module Verticles(){   
 //corner supports
-for(x = [-1 : 2 : 1]){
-for(y = [-1 : 2 : 1]){
-    translate(
-        [x*(corner_post_width/2 + CIW*0.5) -corner_post_width/2,
-        y*(corner_post_width/2 + CIL*0.5) -corner_post_width/2,
-        base_ext_height+plinth_height])
-        cube([corner_post_width, corner_post_width, corner_post_height]);
-    }
-}
-
+//    for(x = [-1 : 2 : 1]){
+//    for(y = [-1 : 2 : 1]){
+//        translate(
+//            [x*(corner_post_width/2 + CIW*0.5) -corner_post_width/2,
+//            y*(corner_post_width/2 + CIL*0.5) -corner_post_width/2,
+//            base_ext_height+plinth_height])
+//            cube([corner_post_width, corner_post_width, corner_post_height]);
+//        }
+//    }
+    
+    Post(corner_post_width,corner_post_width,corner_post_height, "lend", 15,7);
+ 
 //side supports
-translate([CIW*0.5,
--CIL/2+ CPW + 0.5*row_post_width
-,base_ext_height+plinth_height])
-for(y = [0 : 1 : panes_l-2]){
-    translate(
-        [0,
-        y*(row_post_width+CPW)-row_post_width/2,
-        0])
-        cube([
-            corner_post_width,
-            row_post_width,
-            corner_post_height]);
-}
+//translate([CIW*0.5,
+//-CIL/2+ CPW + 0.5*row_post_width
+//,base_ext_height+plinth_height])
+//for(y = [0 : 1 : panes_l-2]){
+//    translate(
+//        [0,
+//        y*(row_post_width+CPW)-row_post_width/2,
+//        0])
+//        cube([
+//            corner_post_width,
+//            row_post_width,
+//            corner_post_height]);
+//}
 
 
 //back supports
-translate([-CIW/2 + pane_width + 0.5*row_post_width, 
-+CIL/2, 
-base_ext_height+plinth_height])
-    for(x = [0 : 1 : panes_w-2])
-        translate([x*(row_post_width+pane_width)-row_post_width/2,0,0])
-            cube([row_post_width, corner_post_width, corner_post_height]);
+//translate([-CIW/2 + pane_width + 0.5*row_post_width, 
+//+CIL/2, 
+//base_ext_height+plinth_height])
+//    for(x = [0 : 1 : panes_w-2])
+//        translate([x*(row_post_width+pane_width)-row_post_width/2,0,0])
+//            cube([row_post_width, corner_post_width, corner_post_height]);
+  
+}
 
-    
-    
-    
-    
+
+module Post(width, depth, height, type, cutWidth, cutDepth){
+    difference(){
+        
+   
+        cube([width, depth, height]);
+             if (type=="lend"){
+                 translate([width-cutWidth,-delta,-delta])   
+                    cube([cutWidth+delta, cutDepth+delta, height+2*delta]);
+             }else {
+                translate([-delta, -delta,-delta])   
+                    cube([cutWidth+delta, cutDepth+delta, height+2*delta]);
+             }
+             
+        if (type=="corner"){    
+            translate([width-cutDepth, depth-cutWidth,-delta])   
+                cube([cutDepth+delta, cutWidth+delta, height+2*delta]);
+        }
+        
+        if (type=="straight"){    
+            translate([width-cutWidth,-delta,-delta])   
+                cube([cutWidth+delta, cutDepth+delta, height+2*delta]);
+        }
+    }
 }
 
 
